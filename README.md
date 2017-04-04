@@ -12,3 +12,21 @@ User editable log to correct information.
 Currently, I am creating "nodes" (key buildings, landmarks, and paths) as elements of an adjacency matrix with path weights and using Dijkstra's algorithm to find the shortest path between our logged positions to generate a path. This path will be fitting as SPO's generally take the same path to reached the specified locations.
 
 Currently, this build is not complete. I will be making finalizations this month.
+
+CURRENT BUILD: 1.0.0
+Functionality:
+-Front End design completed.
+-Password Recovery.
+-Account Registration.
+-Error Checking (Required fields 80% completed.)
+-In house account storrage (Everything is stored on the system.)
+-Log generation (85% complete.)
+
+In progress:
+-Path finder.
+-Account administration.
+-Log exporting.
+-Password Hash.
+-AES Encrypt user data.
+
+
