@@ -214,6 +214,11 @@ public class RegisterWindow
 	{
 		try
 		{
+			if(spoNumberField.equals("") || spoNumberField == null)
+			{
+				JOptionPane.showMessageDialog(frmRegister, "Error! Invalid SPO number.");
+				return false;
+			}
 			SPONumber = Integer.parseInt(spoNumberField.getText());
 			return true;
 		}
@@ -255,7 +260,12 @@ public class RegisterWindow
 		BufferedReader in;
 		String fileContents = "";
 		char c;
-		SPONumber = Integer.parseInt(spoNumberField.getText());
+		if(CheckSPONumber())
+		{
+			SPONumber = Integer.parseInt(spoNumberField.getText());
+		}
+		else
+			return false;
 		
 		String ModSPONumber = "SPO"+Integer.toString(SPONumber);
 
