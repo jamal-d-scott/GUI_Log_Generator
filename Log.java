@@ -203,10 +203,12 @@ public class Log
 		        h.paint(g);
 		      
 		        JOptionPane.showMessageDialog(null, new JLabel(new ImageIcon(bi)));
+		        //Paint the jpg and exit. (Log completion) May change, do not exit on log generation.
 		        try
 		        {
 					ImageIO.write(bi,"png",new File(FrontEnd.username+"'s generated log.png"));
 					JOptionPane.showMessageDialog(null, "Your log has been generated! Check your folder!");
+					System.exit(0);
 				}catch(IOException e) 
 		        {
 					e.printStackTrace();
