@@ -15,13 +15,14 @@ public class Log
 {
 
 	private static JFrame logFrame;
-	private String[] locations = {"" ,"Campus Security Office", "Residence Life", "Royer", "Schlosser","Myer", "Ober", "Brinser", "Founders", "Hackman Apts", "Quads","Stadium",
-									  "Solar Cabin", "Brown Lot","Brossman Commons", "Zug","High Library", "Nicarry", "Disc Golf Course"};
+	public String[] locations = {"" ,"Office", "ResLife", "Royer", "Schlosser","Myer", "Ober", "Brinser", "Founders", "Apts", "Quads","Stadium",
+									  "Solar", "Brown","BSC","Library", "Disc", "Sec Checks", "RA Checks"};
 	private boolean setRaCheck = true, locationCheck = false;
 	public static String from, to;
 	public static JTextArea logField = new JTextArea();
 	private int column = 1, index = 0;
 	
+	private static String start = "", end = "";
 	private static Object rowData[][] = new Object [30][3];
 	private static Object columnNames[] = { "From:", "To:", "Activity:" };
 	public static JTable table = new JTable(rowData, columnNames);
@@ -75,50 +76,26 @@ public class Log
 	        else 
 	        	table.getColumnModel().getColumn(i).setPreferredWidth(50); 
 		}
-		
+		start = "Office";
 		createLog();
 		placeLables();
 		
-		JLabel checkType = new JLabel("(Default: RA Checks)");
-		checkType.setForeground(Color.RED);
-		checkType.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		checkType.setBounds(466, -6, 182, 32);
-		logFrame.getContentPane().add(checkType);
-		
 		JButton bttnCheck = new JButton("Check");
-		bttnCheck.setBounds(10, 31, 310, 40);
+		bttnCheck.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if(column != 1)
+				{
+					int place = column-1;
+					String location = start + " check";
+					table.setValueAt(location, place,2);
+				}
+			}
+		});
+		bttnCheck.setBounds(10, 6, 310, 40);
 		logFrame.getContentPane().add(bttnCheck);
-		
-		JRadioButton RAChecks = new JRadioButton("RA Checks");
-		RAChecks.addItemListener(new ItemListener() 
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e) 
-			{
-				checkType.setText("RA Checks");
-				checkType.setForeground(Color.GREEN);
-				setRaCheck = true;
-			}
-		});
-		RAChecks.setBounds(92, 2, 82, 23);
-		logFrame.getContentPane().add(RAChecks);
-		
-		JRadioButton secChecks = new JRadioButton("Security Checks");
-		secChecks.setBounds(176, 2, 101, 23);
-		logFrame.getContentPane().add(secChecks);
-		secChecks.addItemListener(new ItemListener() 
-		{
-			@Override
-			public void itemStateChanged(ItemEvent e) 
-			{
-				checkType.setText("Security Checks");
-				checkType.setForeground(Color.BLUE);
-				setRaCheck = false;
-			}
-		});
 		 ButtonGroup group = new ButtonGroup();
-		 group.add(secChecks);
-		 group.add(RAChecks);
 		 
 		int j = 120;
 		int k = 120;
@@ -130,24 +107,33 @@ public class Log
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					from = to;
-					table.setValueAt(from, column,0);
-					if(RAChecks.equals("Security Checks"))
-					{
-						table.setValueAt("Security Check", column,2);
+			
+						end = boxes[index].getSelectedItem().toString();
+						if(end.equals("RA Checks") ||end.equals("Sec Checks"))
+						{
+							end = "Founders";
+							from = to;
+							table.setValueAt(from, column,0);
+							table.setValueAt(boxes[index].getSelectedItem().toString(), column,2);
+							start = end;
+							to = timeFormat.format(time = new Date());
+							table.setValueAt(to, column,1);
+							boxes[index].setEnabled(false);
+							column++;
+						}
+						else{
+						ShortestPath pathFinder = new ShortestPath();
+						String path = pathFinder.find(start, end);
+						from = to;
+						end = start;
+						table.setValueAt(from, column,0);
+						table.setValueAt(path, column,2);
+						start = boxes[index].getSelectedItem().toString();
 						to = timeFormat.format(time = new Date());
 						table.setValueAt(to, column,1);
 						boxes[index].setEnabled(false);
 						column++;
-					}	
-					else
-					{
-						table.setValueAt(boxes[index].getSelectedItem(), column,2);
-						to = timeFormat.format(time = new Date());
-						table.setValueAt(to, column,1);
-						boxes[index].setEnabled(false);
-						column++;
-					}
+						}
 					if(index <= 22)
 					{
 						index++;
@@ -206,7 +192,7 @@ public class Log
 		        //Paint the jpg and exit. (Log completion) May change, do not exit on log generation.
 		        try
 		        {
-					ImageIO.write(bi,"png",new File(FrontEnd.username+"'s generated log.png"));
+					ImageIO.write(bi,"png",new File(System.getProperty("user.dir")+"\\UserLogs\\"+FrontEnd.username+"'s generated log.png"));
 					JOptionPane.showMessageDialog(null, "Your log has been generated! Check your folder!");
 					System.exit(0);
 				}catch(IOException e) 
@@ -215,12 +201,8 @@ public class Log
 				}
 			}
 		});
-		generatePDF.setBounds(367, 28, 310, 43);
+		generatePDF.setBounds(367, 3, 310, 43);
 		logFrame.getContentPane().add(generatePDF);
-		
-		JRadioButton rdbtnOther = new JRadioButton("Other");
-		rdbtnOther.setBounds(293, 2, 65, 23);
-		logFrame.getContentPane().add(rdbtnOther);
 	}
 	
 	private void createLog()
@@ -238,20 +220,11 @@ public class Log
 	private void placeLables()
 	{
 		JLabel lblLocations = new JLabel("Locations");
-		lblLocations.setBounds(10, 82, 94, 14);
+		lblLocations.setBounds(10, 57, 94, 14);
 		logFrame.getContentPane().add(lblLocations);
 		
 		JLabel lblLogPreview = new JLabel("Log Preview:");
 		lblLogPreview.setBounds(711, 3, 113, 14);
 		logFrame.getContentPane().add(lblLogPreview);
-		
-		JLabel lblToggleMode = new JLabel("Toggle Mode:");
-		lblToggleMode.setBounds(10, 6, 94, 14);
-		logFrame.getContentPane().add(lblToggleMode);
-		
-		JLabel lblNewLabel = new JLabel("Mode:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		lblNewLabel.setBounds(410, 3, 46, 14);
-		logFrame.getContentPane().add(lblNewLabel);
 	}
 }
