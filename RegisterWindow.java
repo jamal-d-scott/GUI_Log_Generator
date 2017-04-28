@@ -144,7 +144,7 @@ public class RegisterWindow
 			{	
 				try 
 				{
-					if(CheckUser()&&CheckPassword()&&CheckFirstLastName()&&CheckSPONumber()&&CheckSecurityAnswer())
+					if(CheckUser()&&CheckPassword()&&CheckFirstLastName()&&CheckSPONumber()&&CheckSecurityAnswer()&&isValidUser())
 					{
 						RegisterUser(username,password);
 						JOptionPane.showMessageDialog(frmRegister, "Your account has been created.");
@@ -255,7 +255,7 @@ public class RegisterWindow
 			return false;
 		}
 		
-		File folder = new File("U:\\Private\\eclipse\\SPO Logging Generator\\Users\\");
+		File folder = new File(System.getProperty("user.dir")+"\\Users\\");
 		File[] listOfFiles = folder.listFiles();
 		BufferedReader in;
 		String fileContents = "";
@@ -273,7 +273,7 @@ public class RegisterWindow
 		{
 			for (int i = 0; i < listOfFiles.length; i++) 
 			{
-				if(listOfFiles[i].toString().equals("U:\\Private\\eclipse\\SPO Logging Generator\\Users\\"+username +".SPOFile"))
+				if(listOfFiles[i].toString().equals(System.getProperty("user.dir")+"\\Users\\"+username +".SPOFile"))
 				{
 					JOptionPane.showMessageDialog(frmRegister, "ERROR: This account already exists!");
 					return false;
@@ -300,7 +300,7 @@ public class RegisterWindow
 	{
 		try
 		{
-			File file = new File("U:\\Private\\eclipse\\SPO Logging Generator\\Users\\"+username +".SPOFile");
+			File file = new File(System.getProperty("user.dir")+"\\Users\\"+username +".SPOFile");
 			FileWriter out = new FileWriter(file,true); //the true will append the new data
 			String ModSPONumber = "SPO"+Integer.toString(SPONumber);
 			out.write(username+" "+password+" "+firstName+" "+lastName+" "+ModSPONumber+" "+SQuestion+" "+SAnswer+System.getProperty("line.separator"));
@@ -311,5 +311,42 @@ public class RegisterWindow
 		{
 		    System.err.println("IOException: " + ioe.getMessage());
 		}
+	}
+	private boolean isValidUser()
+	{
+		String account = "";
+		BufferedReader in;
+		char c;
+		
+		if(username.equals("admin"))
+			return true;
+		
+		try
+		{
+			File file = new File(System.getProperty("user.dir")+"\\VerifiedUsers\\Validated Users.vuf");
+			if(file.exists() == false)
+			{
+				JOptionPane.showMessageDialog(frmRegister, "Error, could not initialize registration, the system admin needs to set up accounts for access.");
+				frmRegister.dispose();
+				return false;
+			}
+			
+			in = new BufferedReader(new FileReader(file));
+			while(( c = (char)in.read() ) != (char)-1 )
+			{
+				account += c;
+			}
+		}
+		catch(IOException ioe){}
+		
+		String searchString = firstName+" "+lastName+" "+"SPO"+SPONumber;
+		if(account.contains(searchString))
+			return true;
+		
+		if(account.contains("#Open-Beta/ALL"))
+			return true;
+		
+		JOptionPane.showMessageDialog(frmRegister, "Error, you're not authorized to register for this application");
+		return false;
 	}
 }
