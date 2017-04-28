@@ -1,8 +1,8 @@
 /*==================================
  * Jamal D'eShaun Scott            =
- * Campus Security				   =	
+ * Campus Security		   =	
  * Student Log Software v1.0       =
- * 11/15/16						   =	
+ * 11/15/16			   =	
  *=================================*/
 
 import java.awt.*;
@@ -109,7 +109,6 @@ public class FrontEnd
 						
 						if(username.equals("admin"))
 						{
-							frame.dispose();
 							loggingIn = false;
 							adminPage adminP = new adminPage();
 							adminP.administration();
@@ -262,7 +261,7 @@ public class FrontEnd
 		String fileContents = "";
 		
 		//Reads in all of the names of files in the directory
-		File folder = new File("U:\\Private\\eclipse\\SPO Logging Generator\\Users\\");
+		File folder = new File(System.getProperty("user.dir")+"\\Users\\");
 		listOfFiles = folder.listFiles();
 		
 		//Loops through the list of the file names
