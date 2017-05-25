@@ -1,0 +1,21 @@
+WELCOME TO AUTO LOG RELEASE 1:
+
+IMPORTANT:
+
+Do NOT change or alter any of the folders listed in the directory, by doing so, you may
+prevent the application from functioning normally.
+
+Change Notes:
+- Emailing was removed.
+-Hash implementation has been added (not present in unsecure demo model)
+-Added Admin Page
+-Added node graph
+
+Future Updates:
+-transition to database
+-code optimization
+-Bug fixes
+
+Thanks for checking out my code! View more of my work @:
+
+github.com/jamal-d-scott
